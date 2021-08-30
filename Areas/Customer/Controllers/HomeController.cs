@@ -7,8 +7,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using TwitterCopyApp.Models;
 
-namespace TwitterCopyApp.Controllers
+namespace TwitterCopyApp.Controllers.Customer
 {
+    [Area("Customer")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

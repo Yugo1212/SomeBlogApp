@@ -9,6 +9,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.TagHelpers" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.5" />
     <PackageReference Include="toastr" Version="2.1.1" />
@@ -18,10 +19,6 @@
     <ProjectReference Include="..\TwitterCopyApp.DataAccess\TwitterCopyApp.DataAccess.csproj" />
     <ProjectReference Include="..\TwitterCopyApp.Models\TwitterCopyApp.Models.csproj" />
     <ProjectReference Include="..\TwitterCopyApp.Utility\TwitterCopyApp.Utility.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Areas\Customer\" />
   </ItemGroup>
 
 </Project>

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using TwitterCopyApp.DataAccess.Repository.IRepository;
 using TwitterCopyApp.Models;
 
-namespace TwitterCopyApp.Areas.Admin
+namespace TwitterCopyApp.Areas.Admin.Controllers
 {
     [Area("Admin")]
     public class TagController : Controller
@@ -18,12 +18,12 @@ namespace TwitterCopyApp.Areas.Admin
         {
             _unitOfWork = unitOfWork;
         }
-        public ActionResult Index()
+        public IActionResult Index()
         {
             return View();
         }
 
-        public ActionResult Create()
+        public IActionResult Create()
         {
             Tag tag = new Tag();
 
@@ -33,27 +33,35 @@ namespace TwitterCopyApp.Areas.Admin
         // POST: TagController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Tag tag)
+        public async Task<IActionResult> Create(Tag tag)
         {
             if (ModelState.IsValid)
             {
-                _unitOfWork.Tags.AddAsync(tag);
+               await _unitOfWork.Tags.AddAsync(tag);
             }
+            _unitOfWork.Save();
             return RedirectToAction(nameof(Index));
         }
 
         #region API CALLS
         // POST: TagController/Delete/5
         [HttpDelete]
-        public ActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var objFromDb = _unitOfWork.Tags.GetFirstOrDefaultAsync(o => o.Id == id);
+            var objFromDb =await _unitOfWork.Tags.GetFirstOrDefaultAsync(o => o.Id == id);
 
             if (objFromDb == null)
                 return Json(new { success = false, message = "Error while deleting" });
-            _unitOfWork.Tags.RemoveAsync(objFromDb.Id);
+            await _unitOfWork.Tags.RemoveAsync(objFromDb.Id);
             _unitOfWork.Save();
             return Json(new { success = true, message = "Deleted" });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var allTags = await _unitOfWork.Tags.GetAllAsync();
+            return Json(new { data = allTags });
         }
         #endregion
     }

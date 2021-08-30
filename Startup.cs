@@ -12,6 +12,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TwitterCopyApp.Data;
+using TwitterCopyApp.DataAccess.Repository;
+using TwitterCopyApp.DataAccess.Repository.IRepository;
+
 namespace TwitterCopyApp
 {
     public class Startup
@@ -30,6 +33,7 @@ namespace TwitterCopyApp
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -62,7 +66,7 @@ namespace TwitterCopyApp
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{area=Customer}/{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
         }
