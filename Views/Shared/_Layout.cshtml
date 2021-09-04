@@ -46,6 +46,8 @@
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item" asp-area="Admin" asp-controller="Tag" asp-action="Index">Tags</a>
+                                <a class="dropdown-item" asp-area="Admin" asp-controller="ApplicationUser" asp-action="Index">Users</a>
+
                             </div>
                         </li>
                     </ul>
@@ -53,6 +55,7 @@
                         <input class="form-control me-sm-2" type="text" placeholder="Search">
                         <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
                     </form>
+                    <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
