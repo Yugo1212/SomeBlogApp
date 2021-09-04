@@ -30,11 +30,21 @@ namespace TwitterCopyApp.Areas.Admin.Controllers
             return View(tag);
         }
 
-        // POST: TagController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Tag tag)
         {
+            Tag isThisTagExist = new Tag();
+
+            isThisTagExist = await _unitOfWork.Tags.GetFirstOrDefaultAsync(t => t.Name == tag.Name);
+
+            if (isThisTagExist is not null)
+            {
+                ModelState.AddModelError("Name", "This tag already exist");
+                return View(tag);
+            }
+
+
             if (ModelState.IsValid)
             {
                await _unitOfWork.Tags.AddAsync(tag);
@@ -44,14 +54,14 @@ namespace TwitterCopyApp.Areas.Admin.Controllers
         }
 
         #region API CALLS
-        // POST: TagController/Delete/5
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
-            var objFromDb =await _unitOfWork.Tags.GetFirstOrDefaultAsync(o => o.Id == id);
+            var objFromDb = await _unitOfWork.Tags.GetFirstOrDefaultAsync(o => o.Id == id);
 
             if (objFromDb == null)
                 return Json(new { success = false, message = "Error while deleting" });
+
             await _unitOfWork.Tags.RemoveAsync(objFromDb.Id);
             _unitOfWork.Save();
             return Json(new { success = true, message = "Deleted" });
