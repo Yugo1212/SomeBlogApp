@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using TwitterCopyApp.Data;
 using TwitterCopyApp.DataAccess.Repository;
 using TwitterCopyApp.DataAccess.Repository.IRepository;
+using TwitterCopyApp.Utility;
 
 namespace TwitterCopyApp
 {
@@ -37,6 +38,8 @@ namespace TwitterCopyApp
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProviders()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddSingleton<IEmailSender, EmailSender>();
+            services.Configure<EmailOptions>(Configuration);
             services.AddControllersWithViews();
             services.AddRazorPages();
         }

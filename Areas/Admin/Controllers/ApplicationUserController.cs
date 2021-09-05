@@ -28,7 +28,7 @@ namespace TwitterCopyApp.Areas.Admin.Controllers
         #region API CALLS
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public IActionResult GetAll()
         {
             var allUsers =  _db.ApplicationUsers.ToList();
             var userRoles = _db.UserRoles.ToList();
@@ -44,20 +44,19 @@ namespace TwitterCopyApp.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> LockUnlock([FromBody] string Id)
+        public IActionResult LockUnlock([FromBody] string Id)
         {
-            var userFromDb = _db.ApplicationUsers.FirstOrDefault(u => u.Id == Id);
+            var objFromDb = _db.ApplicationUsers.FirstOrDefault(u => u.Id == Id);
+            if (objFromDb == null)
+                return Json(new { success = false, message = "Error while locking/unlocking" });
 
-            if (userFromDb is null)
-                return Json(new { success = false, message = "Error while locking/unlocikng" });
-
-            if (userFromDb.LockoutEnd != null && userFromDb.LockoutEnd > DateTime.Now)
-                userFromDb.LockoutEnd = DateTime.Now;
+            if (objFromDb.LockoutEnd != null && objFromDb.LockoutEnd > DateTime.Now)
+                objFromDb.LockoutEnd = DateTime.Now;
             else
-                userFromDb.LockoutEnd = DateTime.Now.AddDays(31);
-            await _db.SaveChangesAsync();
+                objFromDb.LockoutEnd = DateTime.Now.AddYears(1000);
 
-            return Json(new { success = true, message = "Operation successful" });
+            _db.SaveChanges();
+            return Json(new { success = true, message = "Operation succesful" });
         }
         #endregion
     }

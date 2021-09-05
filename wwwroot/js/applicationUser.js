@@ -5,22 +5,25 @@ $(document).ready(function () {
 });
 
 
+
 function loadDataTable() {
     dataTable = $('#tblData').DataTable({
         "ajax": {
             "url": "/Admin/ApplicationUser/GetAll"
         },
         "columns": [
-            { "data": "userName", "width": "25%" },
-            { "data": "email", "width": "25%" },
-            { "data": "firstName", "width": "20%" },
-            { "data": "lastName", "width": "20%" },
-
+            { "data": "userName", "width": "10%" },
+            { "data": "email", "width": "10%" },
+            { "data": "firstName", "width": "10%" },
+            { "data": "lastName", "width": "10%" },
+            { "data": "role", "width": "10%" },
             {
-                "data": "id",
+                "data": {
+                    id: "id", lockoutEnd: "lockoutEnd"
+                },
                 "render": function (data) {
-                    let lockout = new Date(data.lockoutEnd).getTime();
-                    let today = new Date().getTime();
+                    var today = new Date().getTime();
+                    var lockout = new Date(data.lockoutEnd).getTime();
                     if (lockout > today) {
                         return `
                             <div class="text-center">
@@ -30,7 +33,7 @@ function loadDataTable() {
                             </div>
                            `;
                     }
-                        else {
+                    else {
                         return `
                             <div class="text-center">
                                 <a onclick=LockUnlock('${data.id}') class="btn btn-success text-white" style="cursor:pointer; width:100px;">
@@ -39,8 +42,8 @@ function loadDataTable() {
                             </div>
                            `;
                     }
-                    
-                }, "width": "25%"
+
+                }, "width": "10%"
             }
         ]
     });
@@ -49,13 +52,13 @@ function loadDataTable() {
 function LockUnlock(id) {
     $.ajax({
         type: "POST",
-        url: "/Admin/ApplicationUser/LockUnlock",
+        url: '/Admin/ApplicationUser/LockUnlock',
         data: JSON.stringify(id),
         contentType: 'application/json',
         success: function (data) {
             if (data.success) {
-                toastr.succes(data.message);
-                $('#tblData').DataTable.ajax.reload();
+                toastr.success(data.message);
+                $('#tblData').DataTable().ajax.reload();
             }
             else {
                 toastr.error(data.message);
@@ -63,4 +66,3 @@ function LockUnlock(id) {
         }
     });
 }
-
