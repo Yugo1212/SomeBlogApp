@@ -131,8 +131,9 @@ namespace TwitterCopyApp.Areas.Identity.Pages.Account
                     Email = Input.Email,
                     FirstName = Input.FirstName,
                     LastName = Input.LastName,
-                    Role = Input.Role
-                };
+                    Role = Input.Role,
+                    EmailConfirmed = true
+                    };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
@@ -141,13 +142,16 @@ namespace TwitterCopyApp.Areas.Identity.Pages.Account
                     if (!await _roleManager.RoleExistsAsync(Roles.Role_Admin))
                     {
                         await _roleManager.CreateAsync(new IdentityRole(Roles.Role_Admin));
-                        _unitOfWork.Save();
                     }
 
 
                     if (user.Role == null)
                     {
                         await _userManager.AddToRoleAsync(user, Roles.Role_Admin);
+                    }
+                    else
+                    {
+                        await _userManager.AddToRoleAsync(user, user.Role);
                     }
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
