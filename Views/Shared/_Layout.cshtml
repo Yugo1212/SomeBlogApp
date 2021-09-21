@@ -26,7 +26,7 @@
                 <div class="collapse navbar-collapse" id="navbarColor01">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link active" asp-area="Customer" asp-controller="Home" asp-action="Index">
+                            <a class="nav-link active" asp-area="User" asp-controller="Home" asp-action="Index">
                                 Home
                                 <span class="visually-hidden">(current)</span>
                             </a>
@@ -47,7 +47,7 @@
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <a class="dropdown-item" asp-area="Admin" asp-controller="Tag" asp-action="Index">Tags</a>
                                 <a class="dropdown-item" asp-area="Admin" asp-controller="ApplicationUser" asp-action="Index">Users</a>
-
+                                <a class="dropdown-item" asp-area="User" asp-controller="Post" asp-action="Upsert">Upsert Post</a>
                             </div>
                         </li>
                     </ul>
@@ -73,6 +73,7 @@
     <script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+    <script src="https://cdn.tiny.cloud/1/3qoox5bkyaenv7acy189o1h3pbva6a92y5d8gvbo0hvbpcsg/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

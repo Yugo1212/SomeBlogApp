@@ -1,0 +1,26 @@
+﻿@model TwitterCopyApp.Models.Post
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var title = "Create post";
+}
+
+<div class="col-10 p-2 container overflow-hidden" style="height: 75%">
+    <div class="card border-primary mb-3">
+        <div class="card-header">@title</div>
+        <div class="card-body">
+            <textarea class="card-text col-12"></textarea>
+        </div>
+        <div class="card-footer">
+            <div class="col-6 offset-6">
+                <partial name="_CreateAndBackButton" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}
+
+

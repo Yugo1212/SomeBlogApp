@@ -9,7 +9,7 @@ using TwitterCopyApp.Models;
 
 namespace TwitterCopyApp.Controllers.Customer
 {
-    [Area("Customer")]
+    [Area("User")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

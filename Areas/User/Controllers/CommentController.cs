@@ -9,6 +9,7 @@ using TwitterCopyApp.Models;
 
 namespace TwitterCopyApp.Areas.User.Controllers
 {
+    [Area("User")]
     public class CommentController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
