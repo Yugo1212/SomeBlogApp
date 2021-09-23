@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using TwitterCopyApp.DataAccess.Repository.IRepository;
 using TwitterCopyApp.Models;
@@ -13,9 +15,11 @@ namespace TwitterCopyApp.Areas.User.Controllers
     public class PostController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        public PostController(IUnitOfWork unitOfWork)
+        private readonly UserManager<IdentityUser> _userManager;
+        public PostController(IUnitOfWork unitOfWork, UserManager<IdentityUser> userManager)
         {
             _unitOfWork = unitOfWork;
+            _userManager = userManager;
         }
 
         public IActionResult Index()
@@ -43,7 +47,14 @@ namespace TwitterCopyApp.Areas.User.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Upsert(Post post)
         {
-            if (ModelState.IsValid)
+            post.CreationDate = DateTime.Now;
+            var claimIdenitty = (ClaimsIdentity)User.Identity;
+            var claim = claimIdenitty.FindFirst(ClaimTypes.NameIdentifier);
+
+            post.User = await _unitOfWork.ApplicationUsers.GetFirstOrDefaultAsync(u => u.Id == claim.Value);
+            post.ApplicationUserId = claim.Value;
+
+            try
             {
                 if(post.Id == 0)
                 {
@@ -56,9 +67,13 @@ namespace TwitterCopyApp.Areas.User.Controllers
 
                 _unitOfWork.Save();
 
-                return RedirectToAction(nameof(Index)); 
+                return RedirectToAction(nameof(Index), "Home", new { area = "User"}); 
             }
-            return View(post);
+            catch(Exception ex)
+            {
+                
+                return View(post);
+            }
         }
 
         #region API CALLS

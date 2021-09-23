@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using TwitterCopyApp.DataAccess.Repository.IRepository;
 using TwitterCopyApp.Models;
 
 namespace TwitterCopyApp.Controllers.Customer
@@ -13,15 +14,18 @@ namespace TwitterCopyApp.Controllers.Customer
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IUnitOfWork unitOfWork)
         {
             _logger = logger;
+            _unitOfWork = unitOfWork;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            IEnumerable<Post> postList = await _unitOfWork.Posts.GetAllAsync(includeProperties: "User");
+            return View(postList);
         }
 
         public IActionResult Privacy()

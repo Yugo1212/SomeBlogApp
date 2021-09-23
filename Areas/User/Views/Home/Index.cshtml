@@ -1,9 +1,19 @@
-﻿@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewData["Title"] = "Home Page";
-}
+﻿@model IEnumerable<TwitterCopyApp.Models.Post>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="row pb-3 backgroundWhite">
+
+    @foreach (var post in Model)
+    {
+        <div class="col-8 p-2 container overflow-hidden">
+            <div class="card border-primary mb-3">
+                <div class="card-header">@post.User.UserName says:</div>
+                <div class="card-body">
+                    <p class="card-text col-12">@post.Text</p>
+                </div>
+                <div class="card-footer">
+                </div>
+            </div>
+        </div>
+    }
+
 </div>
