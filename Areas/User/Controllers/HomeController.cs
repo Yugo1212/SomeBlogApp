@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TwitterCopyApp.DataAccess.Repository.IRepository;
 using TwitterCopyApp.Models;
+using TwitterCopyApp.Models.ViewModels;
 
 namespace TwitterCopyApp.Controllers.Customer
 {
@@ -16,6 +17,8 @@ namespace TwitterCopyApp.Controllers.Customer
         private readonly ILogger<HomeController> _logger;
         private readonly IUnitOfWork _unitOfWork;
 
+        public PostViewModel PostVM;
+
         public HomeController(ILogger<HomeController> logger, IUnitOfWork unitOfWork)
         {
             _logger = logger;
@@ -24,8 +27,12 @@ namespace TwitterCopyApp.Controllers.Customer
 
         public async Task<IActionResult> Index()
         {
-            IEnumerable<Post> postList = await _unitOfWork.Posts.GetAllAsync(includeProperties: "User");
-            return View(postList);
+            PostVM = new PostViewModel()
+            {
+                Posts = await _unitOfWork.Posts.GetAllAsync(includeProperties: "User"),
+                Comments = await _unitOfWork.Comments.GetAllAsync()
+            };
+            return View(PostVM);
         }
 
         public IActionResult Privacy()

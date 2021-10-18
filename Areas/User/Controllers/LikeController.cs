@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using TwitterCopyApp.DataAccess.Repository.IRepository;
+using TwitterCopyApp.Models;
 
-namespace TwitterCopyApp.Areas.User.Controllers
+namespace TwitterCopyApp.User.Controllers
 {
+
+    [Area("User")]
     public class LikeController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -16,44 +17,46 @@ namespace TwitterCopyApp.Areas.User.Controllers
         {
             _unitOfWork = unitOfWork;
         }
-
+        #region API CALLS
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<bool> LikeUnlike(int postId)
+        public async Task<IActionResult> LikeUnlike(string id)
         {
             var claimIdenitty = (ClaimsIdentity)User.Identity;
             var claim = claimIdenitty.FindFirst(ClaimTypes.NameIdentifier);
-
+            var postId = Int32.Parse(id);
+            var likedPost = await _unitOfWork.Posts.GetFirstOrDefaultAsync(p => p.Id == postId);
             var likeInPostByCurrentUser = await _unitOfWork.Likes.GetFirstOrDefaultAsync(l => l.PostId == postId && l.ApplicationUserId == claim.Value);
-
-            if(likeInPostByCurrentUser is not null)
+            var allLikes = await _unitOfWork.Likes.GetAllAsync(l => l.PostId == Int32.Parse(id));
+            if (likeInPostByCurrentUser is not null)
             {
                 if (likeInPostByCurrentUser.IsLiked == false)
+                {
                     likeInPostByCurrentUser.IsLiked = true;
+                    likedPost.Likes++;
+                }
                 else
+                {
                     likeInPostByCurrentUser.IsLiked = false;
+                    likedPost.Likes--;
+                }
 
-                return likeInPostByCurrentUser.IsLiked;
+                _unitOfWork.Save();
+                return Json(new { success = likeInPostByCurrentUser.IsLiked });
             }
+            likeInPostByCurrentUser = new Like()
+            {
+                PostId = postId,
+                ApplicationUserId = claim.Value,
+                IsLiked = true,
+            };
+            likedPost.Likes++;
 
-            likeInPostByCurrentUser.PostId = postId;
-            likeInPostByCurrentUser.ApplicationUserId = claim.Value;
-            likeInPostByCurrentUser.IsLiked = true;
             await _unitOfWork.Likes.AddAsync(likeInPostByCurrentUser);
             _unitOfWork.Save();
-            return likeInPostByCurrentUser.IsLiked;
+
+            return Json(new { success = likeInPostByCurrentUser.IsLiked });
         }
-
-        [HttpGet]
-        [ValidateAntiForgeryToken]
-        public async Task<int> GetAllLikesInPost(int postId)
-        {
-            var claimIdenitty = (ClaimsIdentity)User.Identity;
-            var claim = claimIdenitty.FindFirst(ClaimTypes.NameIdentifier);
-
-            var allLikes = await _unitOfWork.Likes.GetAllAsync(l => l.PostId == postId && l.ApplicationUserId == claim.Value && l.IsLiked == true);
-
-            return allLikes.Count();
-        }
+        #endregion
     }
+
 }
