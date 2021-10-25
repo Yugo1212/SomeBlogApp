@@ -1,0 +1,38 @@
+﻿@model TwitterCopyApp.Models.Comment
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var title = "Create comment";
+}
+
+
+<form method="post">
+    <div class="col-10 p-2 container overflow-hidden">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="card border-primary mb-3">
+            <div class="card-header">@title</div>
+            <div class="card-body">
+                <textarea asp-for="Text" class="card-text col-12"></textarea>
+                <span asp-validation-for="Text" class="text-danger"></span>
+            </div>
+            <div class="card-footer">
+                <div class="col-6 offset-6">
+                    <div class="row">
+                        <div class="col">
+                            <button type="submit" class="btn btn-primary form-control">Create</button>
+                        </div>
+                        <div class="col">
+                            <a asp-area="User" asp-controller="Home" asp-action="Index" class="btn btn-success form-control">Back to dashboard</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}
+
+

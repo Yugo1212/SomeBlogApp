@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using TwitterCopyApp.DataAccess.Repository.IRepository;
 using TwitterCopyApp.Models;
@@ -32,7 +33,7 @@ namespace TwitterCopyApp.Areas.User.Controllers
                 return View(comment);
             }
 
-            comment = await _unitOfWork.Comments.GetFirstOrDefaultAsync(p => p.Id == id);
+            comment = await _unitOfWork.Comments.GetFirstOrDefaultAsync(c => c.Id == id);
             if (comment == null)
                 return NotFound();
 
@@ -41,38 +42,58 @@ namespace TwitterCopyApp.Areas.User.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Upsert(Comment comment)
+        public async Task<IActionResult> Upsert(Comment comment, int postId)
         {
-            if (ModelState.IsValid)
+            var claimIdenitty = (ClaimsIdentity)User.Identity;
+            var claim = claimIdenitty.FindFirst(ClaimTypes.NameIdentifier);
+
+            try
             {
-                if(comment.Id == 0)
+                if (comment.Id == 0)
                 {
-                   await _unitOfWork.Comments.AddAsync(comment);
+                    comment.CreationDate = DateTime.Now;
+                    comment.User = await _unitOfWork.ApplicationUsers.GetFirstOrDefaultAsync(u => u.Id == claim.Value);
+                    comment.ApplicationUserId = claim.Value;
+                    comment.Post = await _unitOfWork.Posts.GetFirstOrDefaultAsync(p => p.Id == postId);
+                    comment.PostId = comment.Post.Id;
+                    await _unitOfWork.Comments.AddAsync(comment);
                 }
                 else
                 {
-                     _unitOfWork.Comments.Update(comment);
+                    comment.CreationDate = DateTime.Now;
+                    _unitOfWork.Comments.Update(comment);
                 }
 
                 _unitOfWork.Save();
 
-                return RedirectToAction(nameof(Index)); 
+                return RedirectToAction(nameof(Index), "Home", new { area = "User" });
             }
-            return View(comment);
+            catch (Exception ex)
+            {
+
+                return View(ex);
+            }
         }
 
         #region API CALLS
         [HttpGet]
         public async Task<IActionResult> GetAllCommentsInPost(int postId)
         {
-            var allComments = await _unitOfWork.Comments.GetAllAsync(c => c.PostId == postId);
-            return Json(new { data = allComments });
+            var allComments = await _unitOfWork.Comments.GetAllAsync(c => c.PostId == postId, includeProperties: "User");
+            foreach(var comment in allComments)
+            {
+               comment.CreationDate = Convert.ToDateTime(comment.CreationDate.ToString("yyyy/MM/dd HH:mm"));
+                
+            }
+
+            return Json(new { data = allComments }) ;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get(int id)
         {
             var objFromDb = await _unitOfWork.Comments.GetByIdAsync(id);
+
 
             if (objFromDb == null)
                 return NotFound();

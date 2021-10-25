@@ -5,8 +5,11 @@
     var likes = heartIcon.text();
     $.ajax({
         type: "POST",
-        url: '/User/Like/LikeUnlike/' + id,
-        contentType: 'application/json; charset=utf-8',
+        url: '/User/Like/LikeUnlike/',
+        data: {
+            id: id,
+            entityName: btn.attr('name'),
+        },
         success: function (data) {
             if (data.success == true) {
                 likes++;

@@ -19,14 +19,13 @@ namespace TwitterCopyApp.User.Controllers
         }
         #region API CALLS
         [HttpPost]
-        public async Task<IActionResult> LikeUnlike(string id)
+        public async Task<IActionResult> LikeUnlike(int id, string entityName)
         {
             var claimIdenitty = (ClaimsIdentity)User.Identity;
             var claim = claimIdenitty.FindFirst(ClaimTypes.NameIdentifier);
-            var postId = Int32.Parse(id);
-            var likedPost = await _unitOfWork.Posts.GetFirstOrDefaultAsync(p => p.Id == postId);
-            var likeInPostByCurrentUser = await _unitOfWork.Likes.GetFirstOrDefaultAsync(l => l.PostId == postId && l.ApplicationUserId == claim.Value);
-            var allLikes = await _unitOfWork.Likes.GetAllAsync(l => l.PostId == Int32.Parse(id));
+            var likedPost = await _unitOfWork.Posts.GetFirstOrDefaultAsync(p => p.Id == id);
+            var likeInPostByCurrentUser = await _unitOfWork.Likes.GetFirstOrDefaultAsync(l => l.PostId == id && l.ApplicationUserId == claim.Value);
+            var allLikes = await _unitOfWork.Likes.GetAllAsync(l => l.PostId == id);
             if (likeInPostByCurrentUser is not null)
             {
                 if (likeInPostByCurrentUser.IsLiked == false)
@@ -45,7 +44,7 @@ namespace TwitterCopyApp.User.Controllers
             }
             likeInPostByCurrentUser = new Like()
             {
-                PostId = postId,
+                PostId = id,
                 ApplicationUserId = claim.Value,
                 IsLiked = true,
             };

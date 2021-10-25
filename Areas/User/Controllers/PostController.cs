@@ -47,22 +47,23 @@ namespace TwitterCopyApp.Areas.User.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Upsert(Post post)
         {
-            post.CreationDate = DateTime.Now;
             var claimIdenitty = (ClaimsIdentity)User.Identity;
             var claim = claimIdenitty.FindFirst(ClaimTypes.NameIdentifier);
-
-            post.User = await _unitOfWork.ApplicationUsers.GetFirstOrDefaultAsync(u => u.Id == claim.Value);
-            post.ApplicationUserId = claim.Value;
 
             try
             {
                 if(post.Id == 0)
                 {
-                   await _unitOfWork.Posts.AddAsync(post);
+                    post.CreationDate = DateTime.Now;
+                    post.User = await _unitOfWork.ApplicationUsers.GetFirstOrDefaultAsync(u => u.Id == claim.Value);
+                    post.ApplicationUserId = claim.Value;
+                    await _unitOfWork.Posts.AddAsync(post);
                 }
                 else
                 {
-                     _unitOfWork.Posts.Update(post);
+                    post = await _unitOfWork.Posts.GetFirstOrDefaultAsync(p => p.Id == post.Id);
+                    post.CreationDate = DateTime.Now;
+                    _unitOfWork.Posts.Update(post);
                 }
 
                 _unitOfWork.Save();
@@ -72,7 +73,7 @@ namespace TwitterCopyApp.Areas.User.Controllers
             catch(Exception ex)
             {
                 
-                return View(post);
+                return View(ex);
             }
         }
 
