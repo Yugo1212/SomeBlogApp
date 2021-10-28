@@ -2,7 +2,8 @@
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var title = "Create comment";
+    var title = "Create post";
+    var action = "Create";
 }
 
 
@@ -10,6 +11,11 @@
     <div class="col-10 p-2 container overflow-hidden">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="card border-primary mb-3">
+            @if (Model.Id != 0)
+            {
+                title = "Edit post";
+                action = "Edit";
+            }
             <div class="card-header">@title</div>
             <div class="card-body">
                 <textarea asp-for="Text" class="card-text col-12"></textarea>
@@ -19,7 +25,7 @@
                 <div class="col-6 offset-6">
                     <div class="row">
                         <div class="col">
-                            <button type="submit" class="btn btn-primary form-control">Create</button>
+                            <button type="submit" class="btn btn-primary form-control">@action</button>
                         </div>
                         <div class="col">
                             <a asp-area="User" asp-controller="Home" asp-action="Index" class="btn btn-success form-control">Back to dashboard</a>

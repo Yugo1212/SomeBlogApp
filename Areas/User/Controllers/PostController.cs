@@ -22,6 +22,8 @@ namespace TwitterCopyApp.Areas.User.Controllers
             _userManager = userManager;
         }
 
+        
+
         public IActionResult Index()
         {
             return View();
@@ -55,14 +57,13 @@ namespace TwitterCopyApp.Areas.User.Controllers
                 if(post.Id == 0)
                 {
                     post.CreationDate = DateTime.Now;
-                    post.User = await _unitOfWork.ApplicationUsers.GetFirstOrDefaultAsync(u => u.Id == claim.Value);
                     post.ApplicationUserId = claim.Value;
                     await _unitOfWork.Posts.AddAsync(post);
                 }
                 else
                 {
-                    post = await _unitOfWork.Posts.GetFirstOrDefaultAsync(p => p.Id == post.Id);
                     post.CreationDate = DateTime.Now;
+                    post.ApplicationUserId = claim.Value;
                     _unitOfWork.Posts.Update(post);
                 }
 

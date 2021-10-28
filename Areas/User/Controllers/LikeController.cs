@@ -19,7 +19,7 @@ namespace TwitterCopyApp.User.Controllers
         }
         #region API CALLS
         [HttpPost]
-        public async Task<IActionResult> LikeUnlike(int id, string entityName)
+        public async Task<IActionResult> LikeUnlike(int id)
         {
             var claimIdenitty = (ClaimsIdentity)User.Identity;
             var claim = claimIdenitty.FindFirst(ClaimTypes.NameIdentifier);

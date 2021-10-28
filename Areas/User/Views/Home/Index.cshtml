@@ -1,27 +1,38 @@
 ﻿@model TwitterCopyApp.Models.ViewModels.PostViewModel;
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
+    @using System.Security.Claims;
+    var claimIdenitty = (ClaimsIdentity)User.Identity;
+    var claim = claimIdenitty.FindFirst(ClaimTypes.NameIdentifier);
 }
 
-<div class="row pb-3 backgroundWhite">
+<br />
 
+<div class="row pb-3 backgroundWhite">
+    <br />
+    <div class="col-12 justify-content-center d-flex pb-4">
+        <a asp-area="User" asp-controller="Post" asp-action="Upsert" class="btn btn-success w-25">Add post</a>
+    </div>
     @foreach (var post in Model.Posts)
     {
-         var allCommentInThisPost = Model.Comments.Where(p => p.Id == post.Id); 
+        var allCommentInThisPost = Model.Comments.Where(p => p.Id == post.Id);
         <form method="post">
             <div class="col-8 p-2 container overflow-hidden">
                 <div class="card border-primary mb-3">
                     <div class="card-header form-inline">
                         <p class="col-6">@post.User.UserName says:</p>
                         <p class="col-4">@post.CreationDate.ToString("yyyy/MM/dd HH:mm")</p>
-                        <a class=" btn btn-primary col-2" asp-area="User" asp-controller="Post" asp-action="Upsert" asp-route-id="@post.Id">Edit post <i class="far fa-edit"></i></a>
+                        @if (post.ApplicationUserId == claim.Value)
+                        {
+                            <a class=" btn btn-primary col-2" asp-area="User" asp-controller="Post" asp-action="Upsert" asp-route-id="@post.Id">Edit post <i class="far fa-edit"></i></a>
+                        }
                     </div>
                     <div class="card-body">
                         <p class="card-text col-12">@post.Text</p>
                     </div>
-                    <div class="card-footer form-inline">
-                        <a onclick="LikeUnlike(@post.Id)" id="@post.Id" name="post" class="btn-outline-primary ml-5 w-auto"><i class="far fa-heart">@post.Likes</i></a>
-                        <a asp-area="User" asp-controller="Comment" asp-action="Upsert" asp-route-postId="@post.Id" class="btn btn-primary col-8 w-auto offset-6">Add comment</a>
+                    <div class="card-footer form-inline flex-nowrap">
+                        <a onclick="LikeUnlike(@post.Id)" id="@post.Id" name="post" class="btn-outline-primary col-1 ml-5"><i class="far fa-heart">@post.Likes</i></a>
+                        <a asp-area="User" asp-controller="Comment" asp-action="Upsert" asp-route-postId="@post.Id" class="btn btn-primary offset-8 w-auto">Add comment</a>
                     </div>
                 </div>
                 <div class="col-12">
@@ -48,7 +59,7 @@
                     }
                 }
             </div>
-</form>
+        </form>
     }
 </div>
 
