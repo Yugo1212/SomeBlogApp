@@ -1,4 +1,4 @@
-﻿@model TwitterCopyApp.Models.ViewModels.PostViewModel;
+﻿@model TwitterCopyApp.Models.ViewModels.UserPostViewModel;
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     @using System.Security.Claims;
@@ -10,17 +10,22 @@
 
 <div class="row pb-3 backgroundWhite">
     <br />
+        <div class="col-8 h-50 form-inline table table-bordered">
+            <p class="col-4">@Model.User.UserName</p>
+            <p class="col-4">Followers: @Model.User.ObservedUsers <i class="fas fa-plus-square"></i></p>
+        </div>
+    <br />
     <div class="col-12 justify-content-center d-flex pb-4">
         <a asp-area="User" asp-controller="Post" asp-action="Upsert" class="btn btn-success w-25">Add post</a>
     </div>
-    @foreach (var post in Model.Posts)
+    @foreach (var post in Model.UserPosts)
     {
-        var allCommentInThisPost = Model.Comments.Where(p => p.Id == post.Id);
+        var allCommentInThisPost = post.Comments;
         <form method="post">
             <div class="col-8 p-2 container overflow-hidden">
                 <div class="card border-primary mb-3">
                     <div class="card-header form-inline">
-                        <a asp-area="Admin" asp-controller="ApplicationUser" asp-action="GetUserDashboard" asp-route-id="@post.ApplicationUserId" class="col-6">@post.User.UserName <p>says:</p></a>
+                        <p class="col-6">@post.User.UserName says:</p>
                         <p class="col-4">@post.CreationDate.ToString("yyyy/MM/dd HH:mm")</p>
                         @if (post.ApplicationUserId == claim.Value)
                         {

@@ -83,7 +83,7 @@ namespace TwitterCopyApp.Areas.User.Controllers
         public async Task<IActionResult> GetAll(string userId)
         {
             var allPosts = await _unitOfWork.Posts.GetAllAsync(p => p.ApplicationUserId == userId);
-            return Json(new { data = allPosts });
+            return View(allPosts);
         }
 
         [HttpGet]

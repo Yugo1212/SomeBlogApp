@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TwitterCopyApp.Data;
+using TwitterCopyApp.Models.ViewModels;
 using TwitterCopyApp.DataAccess.Repository.IRepository;
+using System.Security.Claims;
 
 namespace TwitterCopyApp.Areas.Admin.Controllers
 {
@@ -13,6 +15,7 @@ namespace TwitterCopyApp.Areas.Admin.Controllers
     public class ApplicationUserController : Controller
     {
         private readonly ApplicationDbContext _db;
+        public UserPostViewModel userPostViewModel;
 
         public ApplicationUserController(ApplicationDbContext db)
         {
@@ -25,9 +28,38 @@ namespace TwitterCopyApp.Areas.Admin.Controllers
         }
 
 
-        #region API CALLS
 
+        #region API CALLS
         [HttpGet]
+        public IActionResult GetUserDashboard(string id)
+        {
+            UserPostViewModel userVM = new UserPostViewModel()
+            {
+                User = _db.ApplicationUsers.FirstOrDefault(u => u.Id == id),
+                UserPosts = _db.Posts.Where(p => p.ApplicationUserId == id)
+            };
+
+            return View(userVM);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddToFollowed(string id)
+        {
+            var claimIdenitty = (ClaimsIdentity)User.Identity;
+            var claim = claimIdenitty.FindFirst(ClaimTypes.NameIdentifier);
+
+            var user = _db.ApplicationUsers.FirstOrDefault(u => u.Id == claim.Value);
+
+            var userToBeAdded = _db.ApplicationUsers.FirstOrDefault(u => u.Id == id);
+
+            user.ObservedUsers.Add(userToBeAdded);
+
+            await _db.SaveChangesAsync();
+
+            return Json(new { success = true });
+        }
+
+    [HttpGet]
         public IActionResult GetAll()
         {
             var allUsers =  _db.ApplicationUsers.ToList();
