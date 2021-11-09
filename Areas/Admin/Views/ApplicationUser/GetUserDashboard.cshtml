@@ -10,10 +10,19 @@
 
 <div class="row pb-3 backgroundWhite">
     <br />
-        <div class="col-8 h-50 form-inline table table-bordered">
-            <p class="col-4">@Model.User.UserName</p>
-            <p class="col-4">Followers: @Model.User.ObservedUsers <i class="fas fa-plus-square"></i></p>
-        </div>
+    <div class="col-8 form-inline table table-bordered text-center">
+        <img src="~/images/person.png" />
+        <div class="col-4"><span class="align-middle">@Model.User.UserName</span></div>
+        @if (Model.User.ObservedUsers is null)
+        {
+            <div id="@Model.User.Id" class="col-4 justify-content-center"><span class="align-middle">Followers: 0   <i class="fas fa-plus-square" style="font-size:1.5rem"></i></span></div>
+        }
+        else
+        {
+            <div id="@Model.User.Id" class="col-4 justify-content-center"><span class="align-middle">Followers: @Model.User.ObservedUsers    <i class="fas fa-plus-square"></i></span></div>
+        }
+
+    </div>
     <br />
     <div class="col-12 justify-content-center d-flex pb-4">
         <a asp-area="User" asp-controller="Post" asp-action="Upsert" class="btn btn-success w-25">Add post</a>

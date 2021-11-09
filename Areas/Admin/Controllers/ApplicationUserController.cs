@@ -43,7 +43,7 @@ namespace TwitterCopyApp.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddToFollowed(string id)
+        public async Task<IActionResult> FollowUnfollow(string id)
         {
             var claimIdenitty = (ClaimsIdentity)User.Identity;
             var claim = claimIdenitty.FindFirst(ClaimTypes.NameIdentifier);
@@ -52,14 +52,23 @@ namespace TwitterCopyApp.Areas.Admin.Controllers
 
             var userToBeAdded = _db.ApplicationUsers.FirstOrDefault(u => u.Id == id);
 
-            user.ObservedUsers.Add(userToBeAdded);
 
+            if (!user.ObservedUsers.Contains(userToBeAdded))
+            {
+                user.ObservedUsers.Add(userToBeAdded);
+
+                await _db.SaveChangesAsync();
+
+                return Json(new { success = true });
+            }
+
+            user.ObservedUsers.Remove(userToBeAdded);
             await _db.SaveChangesAsync();
 
-            return Json(new { success = true });
+            return Json(new { success = false });
         }
 
-    [HttpGet]
+        [HttpGet]
         public IActionResult GetAll()
         {
             var allUsers =  _db.ApplicationUsers.ToList();
