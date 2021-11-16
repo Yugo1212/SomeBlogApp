@@ -1,22 +1,22 @@
 ﻿function FollowUnfollow(id) {
     var userId = '#' + id;
-    var btn = $(postId);
-    var heartIcon = btn.children();
-    var likes = heartIcon.text();
+    var btn = $(userId);
+    var followSpan = btn.children();
+    var following = followSpan.children('.value').text();
     $.ajax({
         type: "POST",
-        url: '/Admin/ApplicationUser/LikeUnlike/',
+        url: '/Admin/ApplicationUser/FollowUnfollow/',
         data: {
             id: id,
         },
         success: function (data) {
             if (data.success == true) {
-                likes++;
-                btn.html('<i class="fas fa-heart">' + likes);
+                following++;
+                followSpan.html('Followers:  <span class="value">' + following + '</span> <i class="fas fa-minus-square" style="font-size:1.5rem"></i>');
             }
             else {
-                likes--;
-                btn.html('<i class="far fa-heart">' + likes);
+                following--;
+                followSpan.html('Followers:  <span class="value">' + following + '</span> <i class="fas fa-plus-square" style="font-size:1.5rem">');
             }
         }
     })

@@ -13,14 +13,11 @@
     <div class="col-8 form-inline table table-bordered text-center">
         <img src="~/images/person.png" />
         <div class="col-4"><span class="align-middle">@Model.User.UserName</span></div>
-        @if (Model.User.ObservedUsers is null)
+        @if(Model.User.FollowedUsers is null)
         {
-            <div id="@Model.User.Id" class="col-4 justify-content-center"><span class="align-middle">Followers: 0   <i class="fas fa-plus-square" style="font-size:1.5rem"></i></span></div>
+            Model.User.FollowedUsers = new List<ApplicationUser>();
         }
-        else
-        {
-            <div id="@Model.User.Id" class="col-4 justify-content-center"><span class="align-middle">Followers: @Model.User.ObservedUsers    <i class="fas fa-plus-square"></i></span></div>
-        }
+        <div id="@Model.User.Id" onclick="FollowUnfollow('@Model.User.Id')" class="col-4 justify-content-center"><span class="align-middle">Followers: <span class="value">@Model.User.FollowedUsers.Count()</span> <i class="fas fa-plus-square"></i></span></div>
 
     </div>
     <br />
@@ -82,5 +79,6 @@
 
     <script src="~/js/like.js"></script>
     <script src="~/js/comment.js"></script>
+    <script src="~/js/follow.js"></script>
 
 }

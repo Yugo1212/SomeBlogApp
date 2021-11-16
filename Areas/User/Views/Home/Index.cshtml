@@ -22,9 +22,13 @@
                     <div class="card-header form-inline">
                         <a asp-area="Admin" asp-controller="ApplicationUser" asp-action="GetUserDashboard" asp-route-id="@post.ApplicationUserId" class="col-6">@post.User.UserName <p>says:</p></a>
                         <p class="col-4">@post.CreationDate.ToString("yyyy/MM/dd HH:mm")</p>
-                        @if (post.ApplicationUserId == claim.Value)
+                        @if (claim is not null)
                         {
-                            <a class=" btn btn-primary col-2" asp-area="User" asp-controller="Post" asp-action="Upsert" asp-route-id="@post.Id">Edit post <i class="far fa-edit"></i></a>
+                            @if (post.ApplicationUserId == claim.Value)
+                            {
+                                <a class=" btn btn-primary col-2" asp-area="User" asp-controller="Post" asp-action="Upsert" asp-route-id="@post.Id">Edit post <i class="far fa-edit"></i></a>
+                            }
+
                         }
                     </div>
                     <div class="card-body">

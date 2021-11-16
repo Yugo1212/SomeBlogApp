@@ -8,6 +8,7 @@ using TwitterCopyApp.Data;
 using TwitterCopyApp.Models.ViewModels;
 using TwitterCopyApp.DataAccess.Repository.IRepository;
 using System.Security.Claims;
+using TwitterCopyApp.Models;
 
 namespace TwitterCopyApp.Areas.Admin.Controllers
 {
@@ -45,6 +46,7 @@ namespace TwitterCopyApp.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> FollowUnfollow(string id)
         {
+
             var claimIdenitty = (ClaimsIdentity)User.Identity;
             var claim = claimIdenitty.FindFirst(ClaimTypes.NameIdentifier);
 
@@ -52,17 +54,19 @@ namespace TwitterCopyApp.Areas.Admin.Controllers
 
             var userToBeAdded = _db.ApplicationUsers.FirstOrDefault(u => u.Id == id);
 
+            if (user.FollowedUsers is null)
+                user.FollowedUsers = new List<ApplicationUser>();
 
-            if (!user.ObservedUsers.Contains(userToBeAdded))
+            if (!user.FollowedUsers.Contains(userToBeAdded))
             {
-                user.ObservedUsers.Add(userToBeAdded);
+                user.FollowedUsers.Add(userToBeAdded);
 
                 await _db.SaveChangesAsync();
 
                 return Json(new { success = true });
             }
 
-            user.ObservedUsers.Remove(userToBeAdded);
+            user.FollowedUsers.Remove(userToBeAdded);
             await _db.SaveChangesAsync();
 
             return Json(new { success = false });
