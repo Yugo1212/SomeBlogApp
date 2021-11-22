@@ -24,16 +24,16 @@ namespace TwitterCopyApp.Areas.User.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Upsert(int? id)
+        public async Task<IActionResult> Upsert(int? commentId)
         {
             Comment comment = new Comment();
 
-            if (id == null)
+            if (commentId == null)
             {
                 return View(comment);
             }
 
-            comment = await _unitOfWork.Comments.GetFirstOrDefaultAsync(c => c.Id == id);
+            comment = await _unitOfWork.Comments.GetFirstOrDefaultAsync(c => c.Id == commentId);
             if (comment == null)
                 return NotFound();
 

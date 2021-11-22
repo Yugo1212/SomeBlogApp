@@ -2,7 +2,7 @@
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var title = "Create post";
+    var title = "Create comment";
     var action = "Create";
 }
 
@@ -10,10 +10,12 @@
 <form method="post">
     <div class="col-10 p-2 container overflow-hidden">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input hidden asp-for="@Model.Id" />
+        <input hidden asp-for="@Model.ApplicationUserId" />
         <div class="card border-primary mb-3">
             @if (Model.Id != 0)
             {
-                title = "Edit post";
+                title = "Edit comment";
                 action = "Edit";
             }
             <div class="card-header">@title</div>

@@ -15,11 +15,13 @@ namespace TwitterCopyApp.Areas.Admin.Controllers
     [Area("Admin")]
     public class ApplicationUserController : Controller
     {
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ApplicationDbContext _db;
         public UserPostViewModel userPostViewModel;
 
-        public ApplicationUserController(ApplicationDbContext db)
+        public ApplicationUserController(IUnitOfWork unitOfWork, ApplicationDbContext db)
         {
+            _unitOfWork = unitOfWork;
             _db = db;
         }
 
@@ -32,12 +34,12 @@ namespace TwitterCopyApp.Areas.Admin.Controllers
 
         #region API CALLS
         [HttpGet]
-        public IActionResult GetUserDashboard(string id)
+        public async Task<IActionResult> GetUserDashboard(string id)
         {
             UserPostViewModel userVM = new UserPostViewModel()
             {
-                User = _db.ApplicationUsers.FirstOrDefault(u => u.Id == id),
-                UserPosts = _db.Posts.Where(p => p.ApplicationUserId == id)
+                User = await _unitOfWork.ApplicationUsers.GetFirstOrDefaultAsync(u => u.Id == id),
+                UserPosts =await _unitOfWork.Posts.GetAllAsync(p => p.ApplicationUserId == id, includeProperties: "Comments"),
             };
 
             return View(userVM);
@@ -50,9 +52,9 @@ namespace TwitterCopyApp.Areas.Admin.Controllers
             var claimIdenitty = (ClaimsIdentity)User.Identity;
             var claim = claimIdenitty.FindFirst(ClaimTypes.NameIdentifier);
 
-            var user = _db.ApplicationUsers.FirstOrDefault(u => u.Id == claim.Value);
+            var user = await _unitOfWork.ApplicationUsers.GetFirstOrDefaultAsync(u => u.Id == claim.Value);
 
-            var userToBeAdded = _db.ApplicationUsers.FirstOrDefault(u => u.Id == id);
+            var userToBeAdded = await _unitOfWork.ApplicationUsers.GetFirstOrDefaultAsync(u => u.Id == id);
 
             if (user.FollowedUsers is null)
                 user.FollowedUsers = new List<ApplicationUser>();
@@ -61,13 +63,13 @@ namespace TwitterCopyApp.Areas.Admin.Controllers
             {
                 user.FollowedUsers.Add(userToBeAdded);
 
-                await _db.SaveChangesAsync();
+                _unitOfWork.Save();
 
                 return Json(new { success = true });
             }
 
             user.FollowedUsers.Remove(userToBeAdded);
-            await _db.SaveChangesAsync();
+            _unitOfWork.Save();
 
             return Json(new { success = false });
         }

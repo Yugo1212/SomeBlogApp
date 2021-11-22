@@ -7,65 +7,82 @@
 }
 
 <br />
-
-<div class="row pb-3 backgroundWhite">
-    <br />
-    <div class="col-12 justify-content-center d-flex pb-4">
-        <a asp-area="User" asp-controller="Post" asp-action="Upsert" class="btn btn-success w-25">Add post</a>
+@if (claim is null)
+{
+    <div class="col-12 d-flex container justify-content-center flex-wrap mt-5 pt-5">
+        <div class="col-8 d-flex justify-content-center flex-wrap">
+            <h2 class="text-center">Not a member yet? Sign up now!</h2>
+            <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-primary col-5">Sign Up</a>
+        </div>
+        <div class="col-8 d-flex justify-content-center flex-wrap">
+            <h3 class="text-center">...or sign in now if you had account arleady.</h3>
+            <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-success col-5">Sign In</a>
+        </div>
     </div>
-    @foreach (var post in Model.Posts)
-    {
-        var allCommentInThisPost = Model.Comments.Where(p => p.Id == post.Id);
-        <form method="post">
-            <div class="col-8 p-2 container overflow-hidden">
-                <div class="card border-primary mb-3">
-                    <div class="card-header form-inline">
-                        <a asp-area="Admin" asp-controller="ApplicationUser" asp-action="GetUserDashboard" asp-route-id="@post.ApplicationUserId" class="col-6">@post.User.UserName <p>says:</p></a>
-                        <p class="col-4">@post.CreationDate.ToString("yyyy/MM/dd HH:mm")</p>
-                        @if (claim is not null)
-                        {
-                            @if (post.ApplicationUserId == claim.Value)
-                            {
-                                <a class=" btn btn-primary col-2" asp-area="User" asp-controller="Post" asp-action="Upsert" asp-route-id="@post.Id">Edit post <i class="far fa-edit"></i></a>
-                            }
-
-                        }
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text col-12">@post.Text</p>
-                    </div>
-                    <div class="card-footer form-inline flex-nowrap">
-                        <a onclick="LikeUnlike(@post.Id)" id="@post.Id" name="post" class="btn-outline-primary col-1 ml-5"><i class="far fa-heart">@post.Likes</i></a>
-                        <a asp-area="User" asp-controller="Comment" asp-action="Upsert" asp-route-postId="@post.Id" class="btn btn-primary offset-8 w-auto">Add comment</a>
-                    </div>
-                </div>
-                <div class="col-12">
-                    <a onclick="getAllCommentsInPost(@post.Id)" class="btn btn-group-toggle border-1">Show comments</a>
-                </div>
-                @if (post.Comments is not null)
-                {
-                    @foreach (var comment in post.Comments)
-                    {
-                        <div id="commentInPost_@post.Id@comment.Id" hidden class="col-10 container overflow-hidden">
-                            <div class="card border-primary col-12 m-0 px-lg-0">
-                                <div class="card-header form-inline">
-                                    <p class="col-8" id="commentUserName"></p>
-                                    <p class="col-4" id="commentCreationDate"></p>
-                                </div>
-                                <div class="card-body">
-                                    <p class="card-text col-12" id="commentText"></p>
-                                </div>
-                                <div class="card-footer form-inline">
-                                    @*<a onclick="LikeUnlike(@post.Id)" id="@post.Id" name="post" class="btn-outline-primary ml-5 w-auto"><i class="far fa-heart">@post.Likes</i></a>*@
-                                </div>
+}
+else
+{
+    <div class="row pb-3 backgroundWhite">
+        <br />
+        <div class="col-12 justify-content-center d-flex pb-4">
+            <a asp-area="User" asp-controller="Post" asp-action="Upsert" class="btn btn-success w-25">Add post</a>
+        </div>
+        @foreach (var post in Model.Posts)
+        {
+            var allCommentInThisPost = Model.Comments.Where(p => p.Id == post.Id);
+            <form method="post">
+                <div class="col-8 container">
+                    <div class="card border-primary mb-3">
+                        <div class="card-header form-inline">
+                            <a asp-area="Admin" asp-controller="ApplicationUser" asp-action="GetUserDashboard" asp-route-id="@post.ApplicationUserId" class="col-6">@post.User.UserName <p>says:</p></a>
+                            <p class="col-4">@post.CreationDate.ToString("yyyy/MM/dd HH:mm")</p>
+                                @if (post.ApplicationUserId == claim.Value)
+                                {
+                                    <a class=" btn btn-primary col-2" asp-area="User" asp-controller="Post" asp-action="Upsert" asp-route-id="@post.Id">Edit post <i class="far fa-edit"></i></a>
+                                }
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text col-12">@post.Text</p>
+                        </div>
+                        <div class="card-footer form-inline d-flex flex-nowrap">
+                            <a onclick="LikeUnlike(@post.Id)" id="@post.Id" name="post" class="btn-outline-primary col-1 ml-5"><i class="far fa-heart">@post.Likes</i></a>
+                            <div class="d-flex justify-content-end col-11 pr-5">
+                                <a asp-area="User" asp-controller="Comment" asp-action="Upsert" asp-route-postId="@post.Id" class="btn btn-success w-auto">Add comment</a>
                             </div>
                         </div>
+                    </div>
+                    <div class="col-12">
+                        <a onclick="getAllCommentsInPost(@post.Id)" class="btn btn-secondary border-1">Show comments</a>
+                    </div>
+                    @if (post.Comments is not null)
+                    {
+                        @foreach (var comment in post.Comments)
+                        {
+                            <div id="commentInPost_@post.Id@comment.Id" hidden class="col-10 container overflow-hidden">
+                                <div class="card border-primary col-12 m-0 px-lg-0">
+                                    <div class="card-header form-inline">
+                                        <p class="col-8" id="commentUserName"></p>
+                                        <p class="col-4" id="commentCreationDate"></p>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text col-12" id="commentText"></p>
+                                    </div>
+                                    <div class="card-footer form-inline d-flex">
+                                        <div class="d-flex justify-content-end col-11 pr-5">
+                                            <a asp-area="User" asp-controller="Comment" asp-action="Upsert" asp-route-postId="@post.Id" asp-route-commentId ="@comment.Id" class="btn btn-success w-auto">Edit comment</a>
+                                        </div>
+                                        @*<a onclick="LikeUnlike(@post.Id)" id="@post.Id" name="post" class="btn-outline-primary ml-5 w-auto"><i class="far fa-heart">@post.Likes</i></a>*@
+                                    </div>
+                                </div>
+                            </div>
+                        }
                     }
-                }
-            </div>
-        </form>
-    }
-</div>
+                </div>
+            </form>
+        }
+    </div>
+
+}
 
 
 @section Scripts{
