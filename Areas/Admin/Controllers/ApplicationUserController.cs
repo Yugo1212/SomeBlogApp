@@ -39,7 +39,8 @@ namespace TwitterCopyApp.Areas.Admin.Controllers
             UserPostViewModel userVM = new UserPostViewModel()
             {
                 User = await _unitOfWork.ApplicationUsers.GetFirstOrDefaultAsync(u => u.Id == id),
-                UserPosts =await _unitOfWork.Posts.GetAllAsync(p => p.ApplicationUserId == id, includeProperties: "Comments"),
+                UserPosts = await _unitOfWork.Posts.GetAllAsync(p => p.ApplicationUserId == id, includeProperties: "Comments"),
+                Likes = await _unitOfWork.Likes.GetAllAsync()
             };
 
             return View(userVM);
@@ -52,9 +53,9 @@ namespace TwitterCopyApp.Areas.Admin.Controllers
             var claimIdenitty = (ClaimsIdentity)User.Identity;
             var claim = claimIdenitty.FindFirst(ClaimTypes.NameIdentifier);
 
-            var user = await _unitOfWork.ApplicationUsers.GetFirstOrDefaultAsync(u => u.Id == claim.Value);
+            var userToBeAdded = await _unitOfWork.ApplicationUsers.GetFirstOrDefaultAsync(u => u.Id == claim.Value);
 
-            var userToBeAdded = await _unitOfWork.ApplicationUsers.GetFirstOrDefaultAsync(u => u.Id == id);
+            var user = await _unitOfWork.ApplicationUsers.GetFirstOrDefaultAsync(u => u.Id == id);
 
             if (user.FollowedUsers is null)
                 user.FollowedUsers = new List<ApplicationUser>();

@@ -17,7 +17,20 @@
         {
             Model.User.FollowedUsers = new List<ApplicationUser>();
         }
-        <div id="@Model.User.Id" onclick="FollowUnfollow('@Model.User.Id')" class="col-4 justify-content-center"><span class="align-middle">Followers: <span class="value">@Model.User.FollowedUsers.Count()</span> <i class="fas fa-plus-square"></i></span></div>
+        <div id="@Model.User.Id" onclick="FollowUnfollow('@Model.User.Id')" class="col-4 justify-content-center"><span class="align-middle">
+    Followers: <span class="value">@Model.User.FollowedUsers.Count()</span>
+    @{
+        if (Model.User.FollowedUsers.Where(u => u.Id == claim.Value) is not null)
+        {
+            <i class="fas fa-minus-square"></i>
+        }
+        else
+        {
+            <i class="fas fa-plus-square"></i>
+        }
+
+    }
+</span></div>
 
     </div>
     <br />
@@ -42,7 +55,20 @@
                         <p class="card-text col-12">@post.Text</p>
                     </div>
                     <div class="card-footer form-inline flex-nowrap">
-                        <a onclick="LikeUnlike(@post.Id)" id="@post.Id" name="post" class="btn-outline-primary col-1 ml-5"><i class="far fa-heart">@post.Likes</i></a>
+                        <a onclick="LikeUnlike(@post.Id)" id="@post.Id" name="post" class="btn-outline-primary col-1 ml-5">
+                            @{
+                                var isLiked = Model.Likes.Where(p => p.PostId == post.Id).First(u => u.User.Id == claim.Value).IsLiked;
+
+                                if (isLiked == true)
+                                {
+                                    <i class="fas fa-heart">@post.Likes</i>
+                                }
+                                else
+                                {
+                                    <i class="far fa-heart">@post.Likes</i>
+                                }
+                            }
+                        </a>
                         <a asp-area="User" asp-controller="Comment" asp-action="Upsert" asp-route-postId="@post.Id" class="btn btn-primary offset-8 w-auto">Add comment</a>
                     </div>
                 </div>

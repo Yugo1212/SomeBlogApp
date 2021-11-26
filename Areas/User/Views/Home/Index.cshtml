@@ -29,7 +29,10 @@ else
         </div>
         @foreach (var post in Model.Posts)
         {
-            var allCommentInThisPost = Model.Comments.Where(p => p.Id == post.Id);
+            if(post.Comments.Where(p => p.Id == post.Id) is not null)
+            {
+                var allCommentInThisPost = post.Comments.Where(p => p.Id == post.Id);
+            }
             <form method="post">
                 <div class="col-8 container">
                     <div class="card border-primary mb-3">
@@ -45,7 +48,27 @@ else
                             <p class="card-text col-12">@post.Text</p>
                         </div>
                         <div class="card-footer form-inline d-flex flex-nowrap">
-                            <a onclick="LikeUnlike(@post.Id)" id="@post.Id" name="post" class="btn-outline-primary col-1 ml-5"><i class="far fa-heart">@post.Likes</i></a>
+                            <a onclick="LikeUnlike(@post.Id)" id="@post.Id" name="post" class="btn-outline-primary col-1 ml-5">
+                                @{
+                                    if (Model.Likes.Where(p => p.PostId == post.Id).FirstOrDefault(u => u.User.Id == claim.Value) is not null)
+                                    {
+                                        if (Model.Likes.Where(p => p.PostId == post.Id).First(u => u.User.Id == claim.Value).IsLiked == true)
+                                        {
+                                            <i class="fas fa-heart">@post.Likes</i>
+                                        }
+                                        else
+                                        {
+                                            <i class="far fa-heart">@post.Likes</i>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <i class="far fa-heart">@post.Likes</i>
+                                    }
+
+                                }
+
+                            </a>
                             <div class="d-flex justify-content-end col-11 pr-5">
                                 <a asp-area="User" asp-controller="Comment" asp-action="Upsert" asp-route-postId="@post.Id" class="btn btn-success w-auto">Add comment</a>
                             </div>

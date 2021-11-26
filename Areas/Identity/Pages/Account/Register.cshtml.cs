@@ -132,7 +132,8 @@ namespace TwitterCopyApp.Areas.Identity.Pages.Account
                     FirstName = Input.FirstName,
                     LastName = Input.LastName,
                     Role = Input.Role,
-                    EmailConfirmed = true
+                    EmailConfirmed = true,
+                    FollowedUsers = new List<ApplicationUser>()
                     };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)

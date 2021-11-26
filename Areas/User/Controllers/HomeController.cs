@@ -29,8 +29,8 @@ namespace TwitterCopyApp.Controllers.Customer
         {
             PostVM = new PostViewModel()
             {
-                Posts = await _unitOfWork.Posts.GetAllAsync(includeProperties: "User"),
-                Comments = await _unitOfWork.Comments.GetAllAsync()
+                Posts = await _unitOfWork.Posts.GetAllAsync(includeProperties: "User,Comments"),
+                Likes = await _unitOfWork.Likes.GetAllAsync(includeProperties: "User")
             };
             return View(PostVM);
         }

@@ -32,6 +32,8 @@ namespace TwitterCopyApp.Areas.User.Controllers
         public async Task<IActionResult> Upsert(int? id)
         {
             Post post = new Post();
+            if(post.Comments is null)
+                post.Comments = new List<Comment>();
 
             if (id == null)
             {
