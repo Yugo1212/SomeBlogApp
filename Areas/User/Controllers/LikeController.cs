@@ -19,25 +19,18 @@ namespace TwitterCopyApp.User.Controllers
         }
         #region API CALLS
         [HttpPost]
-        public async Task<IActionResult> LikeUnlike(int id)
+        public async Task<IActionResult> LikeUnlike(int id, string entityName)
         {
             var claimIdenitty = (ClaimsIdentity)User.Identity;
             var claim = claimIdenitty.FindFirst(ClaimTypes.NameIdentifier);
+
             var likedPost = await _unitOfWork.Posts.GetFirstOrDefaultAsync(p => p.Id == id);
             var likeInPostByCurrentUser = await _unitOfWork.Likes.GetFirstOrDefaultAsync(l => l.PostId == id && l.ApplicationUserId == claim.Value);
             var allLikes = await _unitOfWork.Likes.GetAllAsync(l => l.PostId == id);
+            
             if (likeInPostByCurrentUser is not null)
             {
-                if (likeInPostByCurrentUser.IsLiked == false)
-                {
-                    likeInPostByCurrentUser.IsLiked = true;
-                    likedPost.Likes++;
-                }
-                else
-                {
-                    likeInPostByCurrentUser.IsLiked = false;
-                    likedPost.Likes--;
-                }
+                likeInPostByCurrentUser.IsLiked = !likeInPostByCurrentUser.IsLiked;
 
                 _unitOfWork.Save();
                 return Json(new { success = likeInPostByCurrentUser.IsLiked });

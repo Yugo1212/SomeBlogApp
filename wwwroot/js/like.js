@@ -1,14 +1,22 @@
-﻿function LikeUnlike(id) {
-    var postId = '#' + id;
-    var btn = $(postId);
+﻿function LikeUnlike(id, entity) {
+    var entityId = '#' + id;
+    var btn = "";
+    var url = "";
+    if (entity == "Post") {
+        url = '/User/Post/LikeUnlike/';
+        btn = $(entityId);
+    }
+    else {
+        url = '/User/Comment/LikeUnlike/';
+        btn = $('#comment_' + id);
+    }
     var heartIcon = btn.children();
     var likes = heartIcon.text();
     $.ajax({
         type: "POST",
-        url: '/User/Like/LikeUnlike/',
+        url: url,
         data: {
             id: id,
-            entityName: btn.attr('name'),
         },
         success: function (data) {
             if (data.success == true) {

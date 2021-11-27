@@ -101,6 +101,42 @@ namespace TwitterCopyApp.Areas.User.Controllers
             return View(objFromDb);
         }
 
+        public async Task<IActionResult> LikeUnlike(int id)
+        {
+            var claimIdenitty = (ClaimsIdentity)User.Identity;
+            var claim = claimIdenitty.FindFirst(ClaimTypes.NameIdentifier);
+
+            var likedComment = await _unitOfWork.Comments.GetFirstOrDefaultAsync(c => c.Id == id);
+            var likeInCommentByCurrentUser = await _unitOfWork.Likes.GetFirstOrDefaultAsync(l => l.CommentId == id && l.ApplicationUserId == claim.Value);
+
+            if (likeInCommentByCurrentUser is not null)
+            {
+                likeInCommentByCurrentUser.IsLiked = !likeInCommentByCurrentUser.IsLiked;
+
+                if (likeInCommentByCurrentUser.IsLiked == true)
+                    likedComment.Likes++;
+                else
+                    likedComment.Likes--;
+
+                _unitOfWork.Comments.Update(likedComment);
+                _unitOfWork.Save();
+                return Json(new { success = likeInCommentByCurrentUser.IsLiked });
+            }
+            likeInCommentByCurrentUser = new Like()
+            {
+                CommentId = id,
+                ApplicationUserId = claim.Value,
+                IsLiked = true,
+            };
+            likedComment.Likes++;
+
+            await _unitOfWork.Likes.AddAsync(likeInCommentByCurrentUser);
+            _unitOfWork.Save();
+
+            return Json(new { success = likeInCommentByCurrentUser.IsLiked });
+        }
+
+
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {

@@ -57,16 +57,22 @@
                     <div class="card-footer form-inline flex-nowrap">
                         <a onclick="LikeUnlike(@post.Id)" id="@post.Id" name="post" class="btn-outline-primary col-1 ml-5">
                             @{
-                                var isLiked = Model.Likes.Where(p => p.PostId == post.Id).First(u => u.User.Id == claim.Value).IsLiked;
-
-                                if (isLiked == true)
+                                if (Model.Likes.Where(p => p.PostId == post.Id).FirstOrDefault(u => u.User.Id == claim.Value) is not null)
                                 {
-                                    <i class="fas fa-heart">@post.Likes</i>
+                                    if (Model.Likes.Where(p => p.PostId == post.Id).First(u => u.User.Id == claim.Value).IsLiked == true)
+                                    {
+                                        <i class="fas fa-heart">@post.Likes</i>
+                                    }
+                                    else
+                                    {
+                                        <i class="far fa-heart">@post.Likes</i>
+                                    }
                                 }
                                 else
                                 {
                                     <i class="far fa-heart">@post.Likes</i>
                                 }
+
                             }
                         </a>
                         <a asp-area="User" asp-controller="Comment" asp-action="Upsert" asp-route-postId="@post.Id" class="btn btn-primary offset-8 w-auto">Add comment</a>
@@ -89,7 +95,25 @@
                                     <p class="card-text col-12" id="commentText"></p>
                                 </div>
                                 <div class="card-footer form-inline">
-                                    @*<a onclick="LikeUnlike(@post.Id)" id="@post.Id" name="post" class="btn-outline-primary ml-5 w-auto"><i class="far fa-heart">@post.Likes</i></a>*@
+                                    <a onclick="LikeUnlike(@comment.Id, 'Comment')" id="comment_@comment.Id" name="comment" class="btn-outline-primary ml-5 w-auto">
+                                        @{
+                                            if (Model.Likes.Where(p => p.CommentId == comment.Id).FirstOrDefault(u => u.User.Id == claim.Value) is not null)
+                                            {
+                                                if (Model.Likes.Where(p => p.CommentId == comment.Id).First(u => u.User.Id == claim.Value).IsLiked == true)
+                                                {
+                                                    <i class="fas fa-heart">@comment.Likes</i>
+                                                }
+                                                else
+                                                {
+                                                    <i class="far fa-heart">@comment.Likes</i>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <i class="far fa-heart">@comment.Likes</i>
+                                            }
+
+                                        }
                                 </div>
                             </div>
                         </div>
