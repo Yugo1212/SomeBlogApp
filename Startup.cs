@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TwitterCopyApp.Data;
+using TwitterCopyApp.DataAccess.Initializer;
 using TwitterCopyApp.DataAccess.Repository;
 using TwitterCopyApp.DataAccess.Repository.IRepository;
 using TwitterCopyApp.Utility;
@@ -39,6 +40,7 @@ namespace TwitterCopyApp
             options.SerializerSettings.ReferenceLoopHandling = 
             Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IDbInitializer, DbInitializer>();
             services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProviders()
     .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddSingleton<IEmailSender, EmailSender>();
