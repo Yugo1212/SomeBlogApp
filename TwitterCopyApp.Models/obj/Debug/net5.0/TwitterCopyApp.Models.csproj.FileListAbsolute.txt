@@ -1,0 +1,12 @@
+C:\Users\Yugo1\OneDrive\Pulpit\Programowanie\c#\TwitterCopyApp\TwitterCopyApp.Models\bin\Debug\net5.0\TwitterCopyApp.Models.deps.json
+C:\Users\Yugo1\OneDrive\Pulpit\Programowanie\c#\TwitterCopyApp\TwitterCopyApp.Models\bin\Debug\net5.0\TwitterCopyApp.Models.dll
+C:\Users\Yugo1\OneDrive\Pulpit\Programowanie\c#\TwitterCopyApp\TwitterCopyApp.Models\bin\Debug\net5.0\ref\TwitterCopyApp.Models.dll
+C:\Users\Yugo1\OneDrive\Pulpit\Programowanie\c#\TwitterCopyApp\TwitterCopyApp.Models\bin\Debug\net5.0\TwitterCopyApp.Models.pdb
+C:\Users\Yugo1\OneDrive\Pulpit\Programowanie\c#\TwitterCopyApp\TwitterCopyApp.Models\obj\Debug\net5.0\TwitterCopyApp.Models.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Yugo1\OneDrive\Pulpit\Programowanie\c#\TwitterCopyApp\TwitterCopyApp.Models\obj\Debug\net5.0\TwitterCopyApp.Models.AssemblyInfoInputs.cache
+C:\Users\Yugo1\OneDrive\Pulpit\Programowanie\c#\TwitterCopyApp\TwitterCopyApp.Models\obj\Debug\net5.0\TwitterCopyApp.Models.AssemblyInfo.cs
+C:\Users\Yugo1\OneDrive\Pulpit\Programowanie\c#\TwitterCopyApp\TwitterCopyApp.Models\obj\Debug\net5.0\TwitterCopyApp.Models.csproj.CoreCompileInputs.cache
+C:\Users\Yugo1\OneDrive\Pulpit\Programowanie\c#\TwitterCopyApp\TwitterCopyApp.Models\obj\Debug\net5.0\TwitterCopyApp.Models.dll
+C:\Users\Yugo1\OneDrive\Pulpit\Programowanie\c#\TwitterCopyApp\TwitterCopyApp.Models\obj\Debug\net5.0\ref\TwitterCopyApp.Models.dll
+C:\Users\Yugo1\OneDrive\Pulpit\Programowanie\c#\TwitterCopyApp\TwitterCopyApp.Models\obj\Debug\net5.0\TwitterCopyApp.Models.pdb
+C:\Users\Yugo1\OneDrive\Pulpit\Programowanie\c#\TwitterCopyApp\TwitterCopyApp.Models\obj\Debug\net5.0\TwitterCopyApp.Models.csproj.AssemblyReference.cache
