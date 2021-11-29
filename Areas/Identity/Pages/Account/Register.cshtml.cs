@@ -132,27 +132,17 @@ namespace TwitterCopyApp.Areas.Identity.Pages.Account
                     FirstName = Input.FirstName,
                     LastName = Input.LastName,
                     Role = Input.Role,
-                    EmailConfirmed = true,
                     FollowedUsers = new List<ApplicationUser>()
+                    
                     };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    if (!await _roleManager.RoleExistsAsync(Roles.Role_Admin))
-                    {
-                        await _roleManager.CreateAsync(new IdentityRole(Roles.Role_Admin));
-                    }
-
-
                     if (user.Role == null)
                     {
-                        await _userManager.AddToRoleAsync(user, Roles.Role_Admin);
-                    }
-                    else
-                    {
-                        await _userManager.AddToRoleAsync(user, user.Role);
+                        await _userManager.AddToRoleAsync(user, Roles.Role_User);
                     }
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

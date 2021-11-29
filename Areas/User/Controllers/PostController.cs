@@ -60,6 +60,7 @@ namespace TwitterCopyApp.Areas.User.Controllers
                 {
                     post.CreationDate = DateTime.Now;
                     post.ApplicationUserId = claim.Value;
+                    post.Comments = new List<Comment>();
                     await _unitOfWork.Posts.AddAsync(post);
                 }
                 else

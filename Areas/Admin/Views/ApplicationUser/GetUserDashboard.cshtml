@@ -75,7 +75,9 @@
 
                             }
                         </a>
-                        <a asp-area="User" asp-controller="Comment" asp-action="Upsert" asp-route-postId="@post.Id" class="btn btn-primary offset-8 w-auto">Add comment</a>
+                        <div class="d-flex justify-content-end col-11 pr-5">
+                            <a asp-area="User" asp-controller="Comment" asp-action="Upsert" asp-route-postId="@post.Id" class="btn btn-success w-auto">Add comment</a>
+                        </div>
                     </div>
                 </div>
                 <div class="col-12">
@@ -114,6 +116,7 @@
                                             }
 
                                         }
+                                        </a>
                                 </div>
                             </div>
                         </div>
